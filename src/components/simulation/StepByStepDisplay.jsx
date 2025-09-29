@@ -35,8 +35,28 @@ const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanatio
           {decisionReason}
         </p>
         
-        {/*todo: AI Generated Explanation Over Here*/}
-        
+        <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+            <Button 
+                icon={Lightbulb} 
+                variant="outline" 
+                size="sm" 
+                onClick={onGenerateExplanation}
+                loading={isGeneratingExplanation}
+                disabled={isGeneratingExplanation}
+            >
+                ✨ Explain This Step Conceptually
+            </Button>
+            {generatedExplanation && (
+                <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="mt-3 p-3 bg-cyan-50 dark:bg-cyan-900/50 border border-cyan-200 dark:border-cyan-800/50 rounded-lg text-sm text-gray-800 dark:text-gray-100"
+                >
+                    <p className="font-bold text-cyan-800 dark:text-cyan-200 mb-1">AI Conceptual Insight:</p>
+                    <p>{generatedExplanation}</p>
+                </motion.div>
+            )}
+        </div>
 
         {isFault && (
           <div className="text-sm p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 space-y-1">

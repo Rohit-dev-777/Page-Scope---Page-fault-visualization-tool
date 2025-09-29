@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { callGeminiApi } from '../utils/helpers';
 import { ALGORITHM_CONFIG } from '../data/algorithmData.js';
 
-const GEMINI_API_KEY = "";
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const GEMINI_API_URL = import.meta.env.VITE_GEMINI_API_URL;
+
 
 export const useGemini = () => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
