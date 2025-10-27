@@ -6,11 +6,34 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const GEMINI_API_URL = import.meta.env.VITE_GEMINI_API_URL;
 
 
+const loadFromLocalStorage = (key, defaultValue) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : defaultValue;
+  } catch (error) {
+    console.error(`Error loading from localStorage: ${error}`);
+    return defaultValue;
+  }
+};
+
+const saveToLocalStorage = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error saving to localStorage: ${error}`);
+  }
+};
+
 export const useGemini = () => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
-  const [aiModalContent, setAiModalContent] = useState({ title: '', content: '' });
+  const [aiModalContent, setAiModalContent] = useState(() => 
+    loadFromLocalStorage('aiModalContent', { title: '', content: '' })
+  );
   const [isComparing, setIsComparing] = useState(false);
   const [isGeneratingExplanation, setIsGeneratingExplanation] = useState(false);
+  const [explanationCache, setExplanationCache] = useState(() =>
+    loadFromLocalStorage('explanationCache', {})
+  );
 
   const handleCompareAlgorithms = async (simulation) => {
     if (!simulation) return;
@@ -47,27 +70,57 @@ export const useGemini = () => {
     }
   };
 
-  const handleGenerateExplanation = async (currentStepData, algorithm, setGeneratedExplanation) => {
+  const handleGenerateExplanation = async (currentStepData, algorithm, setGeneratedExplanation, forceRefresh = false) => {
     if (!currentStepData || isGeneratingExplanation) return;
+
+    // Create a cache key based on the current state
+    const cacheKey = `${algorithm}-${currentStepData.page}-${JSON.stringify(currentStepData.framesBefore)}`;
+
+    // Check cache if not forcing refresh
+    if (!forceRefresh && explanationCache[cacheKey]) {
+      setGeneratedExplanation(explanationCache[cacheKey]);
+      return;
+    }
 
     setIsGeneratingExplanation(true);
     setGeneratedExplanation('Generating conceptual explanation...');
 
     try {
-      const { explanation, decisionReason, framesBefore, page } = currentStepData;
+      const { explanation: stepExplanation, decisionReason, framesBefore, framesAfter, page, isHit } = currentStepData;
       const algoName = ALGORITHM_CONFIG[algorithm].name;
+      const algoDescription = ALGORITHM_CONFIG[algorithm].description;
 
-      const systemInstruction = "You are an operating systems teaching assistant. Explain the core concept behind a page replacement decision. Keep the explanation to 3-4 sentences, use simple, non-technical language where possible, and focus on the 'why' based on the specific algorithm's rule.";
+      const systemInstruction = `You are an operating systems teaching assistant. Your task is to explain the current state of page replacement simulation in a clear, conceptual way. 
+      Format your response using markdown, including:
+      1. A brief summary of what's happening
+      2. Why the decision was made (based on the algorithm's rules)
+      3. The impact of this decision on system performance`;
 
-      const userQuery = `Current Step: Accessing Page ${page}.
-      Algorithm: ${algoName}.
-      Decision: ${explanation}.
-      Mechanism: ${decisionReason}.
-      Memory State: ${framesBefore.map((f, i) => `Frame ${i}: ${f || 'Empty'}`).join(', ')}.
-      Explain the *concept* (not just the mechanics) of this step for a student new to OS concepts.`;
+      const userQuery = `Algorithm: ${algoName}
+      Algorithm Description: ${algoDescription}
+      Current Step: Accessing Page ${page}
+      Result: ${isHit ? 'Page Hit' : 'Page Fault'}
+      Decision Made: ${stepExplanation}
+      Reason: ${decisionReason}
+      Memory State Before: ${framesBefore.map((f, i) => `Frame ${i}: ${f || 'Empty'}`).join(', ')}
+      Memory State After: ${framesAfter.map((f, i) => `Frame ${i}: ${f || 'Empty'}`).join(', ')}
+
+      Please explain:
+      1. What happened in this step?
+      2. Why did the ${algoName} algorithm make this decision?
+      3. Was this efficient? Why or why not?`;
 
       const result = await callGeminiApi(systemInstruction, userQuery, GEMINI_API_URL, GEMINI_API_KEY);
-      setGeneratedExplanation(result || 'The AI could not generate an explanation for this step.');
+      const aiExplanation = result || 'The AI could not generate an explanation for this step.';
+      
+      // Update cache
+      setExplanationCache(prev => {
+        const updated = { ...prev, [cacheKey]: aiExplanation };
+        saveToLocalStorage('explanationCache', updated);
+        return updated;
+      });
+
+      setGeneratedExplanation(aiExplanation);
 
     } catch (error) {
       console.error("AI Explanation Error:", error);
