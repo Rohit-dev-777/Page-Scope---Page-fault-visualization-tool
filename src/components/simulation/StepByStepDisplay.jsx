@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { Check, X, Info, Lightbulb } from 'lucide-react';
 import Button from '../Button.jsx';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanation, generatedExplanation }) => {
   const defaultContent = (
@@ -34,28 +36,51 @@ const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanatio
         <p className="text-gray-800 dark:text-gray-200 text-lg">
           {decisionReason}
         </p>
-        
+
         <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
-            <Button 
-                icon={Lightbulb} 
-                variant="outline" 
-                size="sm" 
-                onClick={onGenerateExplanation}
-                loading={isGeneratingExplanation}
-                disabled={isGeneratingExplanation}
+          <Button
+            icon={Lightbulb}
+            variant="outline"
+            size="sm"
+            onClick={onGenerateExplanation}
+            loading={isGeneratingExplanation}
+            disabled={isGeneratingExplanation}
+          >
+            ✨ Explain This Step Conceptually
+          </Button>
+          {generatedExplanation && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              className="mt-3 p-3 bg-cyan-50 dark:bg-cyan-900/50 border border-cyan-200 dark:border-cyan-800/50 rounded-lg text-sm text-gray-800 dark:text-gray-100"
             >
-                ✨ Explain This Step Conceptually
-            </Button>
-            {generatedExplanation && (
-                <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    className="mt-3 p-3 bg-cyan-50 dark:bg-cyan-900/50 border border-cyan-200 dark:border-cyan-800/50 rounded-lg text-sm text-gray-800 dark:text-gray-100"
+              <p className="font-bold text-cyan-800 dark:text-cyan-200 mb-2">AI Conceptual Insight:</p>
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ node, ...props }) => <p className="mb-2 text-gray-800 dark:text-gray-200" {...props} />,
+                    h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100" {...props} />,
+                    h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100" {...props} />,
+                    h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-2 text-gray-900 dark:text-gray-100" {...props} />,
+                    ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                    ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                    li: ({ node, ...props }) => <li className="text-gray-800 dark:text-gray-200" {...props} />,
+                    code: ({ node, inline, ...props }) => (
+                      inline
+                        ? <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-sm" {...props} />
+                        : <code className="block p-2 bg-gray-100 dark:bg-gray-800 rounded text-sm my-2" {...props} />
+                    ),
+                    blockquote: ({ node, ...props }) => (
+                      <blockquote className="border-l-4 border-cyan-500 pl-4 italic my-2" {...props} />
+                    ),
+                  }}
                 >
-                    <p className="font-bold text-cyan-800 dark:text-cyan-200 mb-1">AI Conceptual Insight:</p>
-                    <p>{generatedExplanation}</p>
-                </motion.div>
-            )}
+                  {generatedExplanation}
+                </ReactMarkdown>
+              </div>
+            </motion.div>
+          )}
         </div>
 
         {isFault && (
