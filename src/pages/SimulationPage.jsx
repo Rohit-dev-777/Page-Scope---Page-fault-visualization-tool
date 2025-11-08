@@ -106,13 +106,33 @@ const SimulationPage = () => {
 
   const handleExportChart = () => {
     if (chartRef.current) {
-      const url = chartRef.current.toBase64Image('image/png');
+      const chart = chartRef.current;
+      const canvas = chart.canvas;
+      const ctx = canvas.getContext('2d');
+
+      // Create a new canvas for exporting
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = canvas.width;
+      exportCanvas.height = canvas.height;
+
+      const exportCtx = exportCanvas.getContext('2d');
+
+      // Fill solid background color before drawing chart
+      exportCtx.fillStyle = '#1e293b';
+      exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      // Draw original chart on top
+      exportCtx.drawImage(canvas, 0, 0);
+
+      // Convert to PNG
+      const url = exportCanvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.download = `performance-chart-${simulation.algorithm}-${Date.now()}.png`;
       link.href = url;
       link.click();
     }
   };
+
 
   return (
     <>
@@ -126,7 +146,7 @@ const SimulationPage = () => {
               onRun={() => handleRunSimulation(settings.algorithm, settings.referenceString, settings.frameCount)}
               onReset={handleResetSimulation}
             />
-            <ExportAnalysis 
+            <ExportAnalysis
               handleExportSummary={handleExportSummary}
               handleExportChart={handleExportChart}
               simulation={simulation}
@@ -174,7 +194,7 @@ const SimulationPage = () => {
         maxStep={totalSteps}
         onJump={handleJump}
       />
-      
+
       <AiResponseModal
         isOpen={isAiModalOpen}
         onClose={() => setIsAiModalOpen(false)}

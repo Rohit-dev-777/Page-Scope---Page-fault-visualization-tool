@@ -7,12 +7,12 @@ import remarkGfm from 'remark-gfm';
 const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanation, generatedExplanation }) => {
   const defaultContent = (
     <div className="space-y-2">
-      <div className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center"><Info className="w-6 h-6 mr-2 text-cyan-600" /> Getting Started</div>
+      <div className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center"><Info className="w-6 h-6 mr-2 text-blue-600" /> Getting Started</div>
       <p className="text-gray-600 dark:text-gray-400">Select an algorithm and click "Start Simulation" to begin detailed step-by-step analysis.</p>
     </div>
   );
 
-  if (!step) return <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-xl border-l-4 border-cyan-600">{defaultContent}</div>;
+  if (!step) return <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-xl border-l-4 border-blue-600">{defaultContent}</div>;
 
   const { explanation, decisionReason, isHit, framesBefore, framesAfter } = step;
 
@@ -52,9 +52,9 @@ const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanatio
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
-              className="mt-3 p-3 bg-cyan-50 dark:bg-cyan-900/50 border border-cyan-200 dark:border-cyan-800/50 rounded-lg text-sm text-gray-800 dark:text-gray-100"
+              className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-800/50 rounded-lg text-sm text-gray-800 dark:text-gray-100"
             >
-              <p className="font-bold text-cyan-800 dark:text-cyan-200 mb-2">AI Conceptual Insight:</p>
+              <p className="font-bold text-blue-800 dark:text-blue-200 mb-2">AI Conceptual Insight:</p>
               <div className="prose prose-sm dark:prose-invert max-w-none">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -72,7 +72,7 @@ const StepByStepDisplay = ({ step, onGenerateExplanation, isGeneratingExplanatio
                         : <code className="block p-2 bg-gray-100 dark:bg-gray-800 rounded text-sm my-2" {...props} />
                     ),
                     blockquote: ({ node, ...props }) => (
-                      <blockquote className="border-l-4 border-cyan-500 pl-4 italic my-2" {...props} />
+                      <blockquote className="border-l-4 border-blue-500 pl-4 italic my-2" {...props} />
                     ),
                   }}
                 >

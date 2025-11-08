@@ -48,11 +48,11 @@ const SimulationWindow = ({
       <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner">
         <div className="flex justify-between items-center text-sm font-semibold mb-2">
 
-          <span className="text-cyan-600 dark:text-cyan-400">Step: {currentStep + 1}/{totalSteps}</span>
+          <span className="text-blue-600 dark:text-blue-400">Step: {currentStep + 1}/{totalSteps}</span>
           <span className="text-gray-600 dark:text-gray-300 ">Page: {currentStepData?.page || '-'}</span>
           <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${!currentStepData ? 'bg-gray-300 text-gray-800' :
-              currentStepData.isHit ? 'bg-green-500 text-white' :
-                'bg-red-500 text-white'
+            currentStepData.isHit ? 'bg-green-500 text-white' :
+              'bg-red-500 text-white'
             }`}>
             {currentStepData ? (currentStepData.isHit ? 'HIT' : 'FAULT') : 'READY'}
           </span>
@@ -62,7 +62,7 @@ const SimulationWindow = ({
         {/* status bar to show the progress of steps */}
         <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-cyan-600"
+            className="h-full bg-blue-600"
             initial={{ width: '0%' }}
             animate={{ width: `${(currentStep + 1) / totalSteps * 100}%` }}
             transition={{ duration: 0.5 }}

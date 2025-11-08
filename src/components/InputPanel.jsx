@@ -131,7 +131,7 @@ const InputPanel = ({ settings, setSettings, onRun, onReset }) => {
               max="3000"
               value={settings.speed}
               onChange={handleInputChange}
-              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700 accent-cyan-600"
+              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700 accent-blue-600"
             />
             <span className="text-sm text-gray-500 dark:text-gray-400">Fast</span>
           </div>

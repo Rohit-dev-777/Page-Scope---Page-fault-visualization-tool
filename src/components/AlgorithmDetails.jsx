@@ -29,8 +29,8 @@ const AlgorithmSelector = ({ algorithm }) => {
       <div className="space-y-4">
         
         <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-gray-700">
-          <h4 className="text-xl font-bold text-cyan-600 dark:text-cyan-400">{info.name}</h4>
-          <span className="px-3 py-1 bg-cyan-600 text-white text-sm font-semibold rounded-full">{info.complexityBadge}</span>
+          <h4 className="text-xl font-bold text-blue-600 dark:text-blue-400">{info.name}</h4>
+          <span className="px-3 py-1 bg-blue-600 text-white text-sm font-semibold rounded-full">{info.complexityBadge}</span>
         </div>
         <p className="text-gray-600 dark:text-gray-400 italic">{info.description}</p>
 

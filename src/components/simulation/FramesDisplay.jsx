@@ -17,7 +17,7 @@ const FramesDisplay = ({ step }) => {
     }
 
     if (!isHit && pageInFrame === page) {
-      return `${base} bg-cyan-100 dark:bg-cyan-900 border-cyan-500 text-cyan-700 dark:text-cyan-300 scale-105`;
+      return `${base} bg-blue-100 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-300 scale-105`;
     }
 
     if (!isHit && replacedPage !== null && index === replacedIndex) {
@@ -59,7 +59,7 @@ const FramesDisplay = ({ step }) => {
         <span className="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 rounded-full flex items-center"><Check className="w-3 h-3 mr-1" /> Hit</span>
         <span className="px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 rounded-full flex items-center"><X className="w-3 h-3 mr-1" /> Fault</span>
         <span className="px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300 rounded-full flex items-center"><Zap className="w-3 h-3 mr-1" /> Victim</span>
-        <span className="px-2 py-1 bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300 rounded-full flex items-center"><MoveRight className="w-3 h-3 mr-1" /> Current Ref</span>
+        <span className="px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full flex items-center"><MoveRight className="w-3 h-3 mr-1" /> Current Ref</span>
       </div>
     </div>
   );

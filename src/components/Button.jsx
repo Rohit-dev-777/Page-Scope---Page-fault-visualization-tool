@@ -19,7 +19,7 @@ const Button = ({
   
   if (variant === "primary") {
     variantStyles =
-      "bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-600";
+      "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600";
   } else if (variant === "secondary") {
     variantStyles =
       "bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100";

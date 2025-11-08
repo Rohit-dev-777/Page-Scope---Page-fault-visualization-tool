@@ -20,12 +20,12 @@ const AiResponseModal = ({ isOpen, onClose, title, content }) => (
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-              <h3 className="text-xl font-semibold text-cyan-600 dark:text-cyan-400 flex items-center"><Brain className="w-6 h-6 mr-2" />{title}</h3>
+              <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400 flex items-center"><Brain className="w-6 h-6 mr-2" />{title}</h3>
               <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-5 text-gray-800 dark:text-gray-200 space-y-4 prose prose-cyan dark:prose-invert">
+            <div className="p-5 text-gray-800 dark:text-gray-200 space-y-4 prose prose-blue dark:prose-invert">
                 <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
             <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
