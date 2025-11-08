@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { X, Check, BarChart, Layers, Brain } from 'lucide-react';
+import { X, Check, BarChart, Brain } from 'lucide-react';
 
 import Card from './Card.jsx';
 import Button from './Button.jsx';
@@ -12,13 +12,24 @@ const PerformanceMetrics = ({
   onCompareAlgorithms,
   isComparing,
 }) => {
-  const step = simulation?.steps[currentStep];
+  // --- Real-time Stats ---
+  const { totalFaults, totalHits } = useMemo(() => {
+    if (!simulation || currentStep < 0) return { totalFaults: 0, totalHits: 0 };
 
-  // Stats
-  const faults = step ? step.pageFaults : 0;
-  const hits = step ? step.pageHits : 0;
-  const total = faults + hits;
-  const hitRate = total > 0 ? ((hits / total) * 100).toFixed(1) : 0;
+    const steps = simulation.steps.slice(0, currentStep + 1);
+    let totalFaults = 0;
+    let totalHits = 0;
+
+    steps.forEach((s) => {
+      if (s.isFault) totalFaults++;
+      else totalHits++;
+    });
+
+    return { totalFaults, totalHits };
+  }, [simulation, currentStep]);
+
+  const total = totalFaults + totalHits;
+  const hitRate = total > 0 ? ((totalHits / total) * 100).toFixed(1) : 0;
   const efficiency = hitRate;
 
   // --- Chart Data ---
@@ -39,7 +50,7 @@ const PerformanceMetrics = ({
         {
           label: 'Cumulative Page Faults',
           data: faultData,
-          borderColor: '#fb923c', // orange line
+          borderColor: '#fb923c',
           backgroundColor: 'rgba(251, 146, 60, 0.15)',
           borderWidth: 3,
           fill: true,
@@ -52,7 +63,7 @@ const PerformanceMetrics = ({
     };
   }, [simulation, currentStep]);
 
-    // --- Chart Options ---
+  // --- Chart Options ---
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -60,9 +71,7 @@ const PerformanceMetrics = ({
       duration: 700,
       easing: 'easeOutQuart',
     },
-    layout: {
-      padding: 20,
-    },
+    layout: { padding: 20 },
     scales: {
       y: {
         beginAtZero: true,
@@ -73,13 +82,8 @@ const PerformanceMetrics = ({
           color: 'rgb(229 231 235)',
           font: { size: 14 },
         },
-        ticks: {
-          color: 'rgb(229 231 235)',
-          stepSize: 1,
-        },
-        grid: {
-          color: 'rgba(255,255,255,0.07)',
-        },
+        ticks: { color: 'rgb(229 231 235)', stepSize: 1 },
+        grid: { color: 'rgba(255,255,255,0.07)' },
       },
       x: {
         title: {
@@ -88,12 +92,8 @@ const PerformanceMetrics = ({
           color: 'rgb(229 231 235)',
           font: { size: 14 },
         },
-        ticks: {
-          color: 'rgb(229 231 235)',
-        },
-        grid: {
-          color: 'rgba(255,255,255,0.07)',
-        },
+        ticks: { color: 'rgb(229 231 235)' },
+        grid: { color: 'rgba(255,255,255,0.07)' },
       },
     },
     plugins: {
@@ -101,10 +101,7 @@ const PerformanceMetrics = ({
         display: true,
         position: 'top',
         align: 'end',
-        labels: {
-          color: 'rgb(229 231 235)',
-          boxWidth: 12,
-        },
+        labels: { color: 'rgb(229 231 235)', boxWidth: 12 },
       },
       tooltip: {
         mode: 'index',
@@ -124,7 +121,6 @@ const PerformanceMetrics = ({
     },
     backgroundColor: '#1e293b',
   };
-
 
   // --- Stat Card Component ---
   const StatCard = ({ label, value, icon: Icon, colorClass, borderClass }) => (
@@ -166,14 +162,14 @@ const PerformanceMetrics = ({
         <div className="grid grid-cols-2 gap-4">
           <StatCard
             label="Page Faults (Total)"
-            value={faults}
+            value={totalFaults}
             icon={X}
             colorClass="text-red-500"
             borderClass="border-red-500"
           />
           <StatCard
             label="Page Hits (Total)"
-            value={hits}
+            value={totalHits}
             icon={Check}
             colorClass="text-green-500"
             borderClass="border-green-500"
@@ -184,13 +180,6 @@ const PerformanceMetrics = ({
             icon={BarChart}
             colorClass="text-blue-500"
             borderClass="border-blue-500"
-          />
-          <StatCard
-            label="Overall Efficiency"
-            value={`${efficiency}%`}
-            icon={Layers}
-            colorClass="text-indigo-500"
-            borderClass="border-indigo-500"
           />
         </div>
 
