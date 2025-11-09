@@ -9,16 +9,17 @@ export const simulateAlgorithm = (algorithm, referenceString, frameCount) => {
   const { pageFaults, sequence } = algo(refArray, parseInt(frameCount));
 
   const steps = sequence.map((step, index) => {
-    const { page, frames, isHit, isFault, replacedPage } = step;
+    const { page, frames, framesBefore, isHit, isFault, replacedPage, replacedIndex } = step;
     const pageHits = sequence.slice(0, index + 1).filter(s => s.isHit).length;
     return {
       stepNumber: index + 1,
       page: page,
-      framesBefore: index > 0 ? sequence[index - 1].frames : [],
+      framesBefore: framesBefore || (index > 0 ? sequence[index - 1].frames : []),
       framesAfter: frames,
       isHit: isHit,
       isFault: isFault,
       replacedPage: replacedPage,
+      replacedIndex: replacedIndex,
       explanation: isHit ? `Page Hit! Page ${page} is already in memory.` : `Page Fault! Loaded page ${page}.`,
       decisionReason: isFault ? (replacedPage ? `Replaced page ${replacedPage}.` : `Placed in an empty frame.`) : 'No replacement needed.',
       pageFaults: pageFaults,

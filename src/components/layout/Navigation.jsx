@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { Home, Cpu, LogIn, UserPlus } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
+
+const IS_CLERK_ENABLED = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 const Navigation = () => {
   const location = useLocation();
@@ -41,29 +43,37 @@ const Navigation = () => {
 
           {/* Right Auth Buttons */}
           <div className="flex items-center space-x-3">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md shadow-blue-700/40 transition">
-                  <LogIn size={16} /> Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] text-gray-100 px-4 py-2 rounded-lg text-sm font-medium border border-[#334155] transition">
-                  <UserPlus size={16} /> Sign Up
-                </button>
-              </SignUpButton>
-            </SignedOut>
+            {IS_CLERK_ENABLED ? (
+              <>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md shadow-blue-700/40 transition">
+                      <LogIn size={16} /> Sign In
+                    </button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <button className="flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] text-gray-100 px-4 py-2 rounded-lg text-sm font-medium border border-[#334155] transition">
+                      <UserPlus size={16} /> Sign Up
+                    </button>
+                  </SignUpButton>
+                </SignedOut>
 
-            <SignedIn>
-              <UserButton
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "ring-2 ring-blue-600 shadow-md shadow-blue-700/30",
-                  },
-                }}
-              />
-            </SignedIn>
+                <SignedIn>
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: "ring-2 ring-blue-600 shadow-md shadow-blue-700/30",
+                      },
+                    }}
+                  />
+                </SignedIn>
+              </>
+            ) : (
+              <div className="text-xs text-gray-400 px-3 py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                Development Mode
+              </div>
+            )}
           </div>
         </div>
       </div>
