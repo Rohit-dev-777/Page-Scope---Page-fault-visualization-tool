@@ -32,12 +32,12 @@ const FramesDisplay = ({ step }) => {
       timeouts.push(setTimeout(() => {
         setAnimationPhase('requesting');
         setShowMemorySource(true);
-      }, 200));
+      }, 500));
 
       // Phase 2: Show page fault
       timeouts.push(setTimeout(() => {
         setAnimationPhase('faulting');
-      }, 600));
+      }, 1200));
 
       // Phase 3: Show frame replacement
       timeouts.push(setTimeout(() => {
@@ -50,14 +50,14 @@ const FramesDisplay = ({ step }) => {
             setDisplayFrames(intermediateFrames);
           }
         }
-      }, 1000));
+      }, 2200));
 
       // Phase 4: Complete - show final state
       timeouts.push(setTimeout(() => {
         setAnimationPhase('complete');
         setDisplayFrames(framesAfter || []);
         setShowMemorySource(false);
-      }, 1400));
+      }, 3200));
     } else {
       // For hits, just show the final state immediately
       setAnimationPhase('complete');
@@ -87,7 +87,7 @@ const FramesDisplay = ({ step }) => {
   }
 
   const getFrameClass = (pageInFrame, index) => {
-    let base = "m-3 w-16 h-16 sm:w-20 sm:h-20 flex flex-col items-center justify-center text-xl font-bold rounded-xl border-2 transition-all duration-300 relative shadow-md";
+    let base = "m-3 w-16 h-16 sm:w-20 sm:h-20 flex flex-col items-center justify-center text-xl font-bold rounded-xl border-2 transition-all duration-1000 relative shadow-md";
     
     if (pageInFrame === null) {
       return `${base} bg-gray-100 dark:bg-gray-700 border-dashed border-gray-400 text-gray-500 dark:text-gray-400 text-sm`;
@@ -157,7 +157,7 @@ const FramesDisplay = ({ step }) => {
           <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 1 }}
+            transition={{ repeat: Infinity, duration: 5 }}
             className="px-4 py-2 bg-purple-100 dark:bg-purple-900 border-2 border-purple-500 rounded-lg"
           >
             <span className="text-2xl font-bold text-purple-700 dark:text-purple-300">Page {requestedPage}</span>
@@ -227,7 +227,7 @@ const FramesDisplay = ({ step }) => {
                     <motion.span
                       initial={isNewPage ? { rotate: 360, scale: 0 } : { y: 5, opacity: 0 }}
                       animate={{ rotate: 0, scale: 1, y: 0, opacity: 1 }}
-                      transition={{ duration: 0.4 }}
+                      transition={{ duration: 0.5 }}
                     >
                       {p}
                     </motion.span>

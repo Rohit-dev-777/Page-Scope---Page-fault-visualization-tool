@@ -75,7 +75,12 @@ const SimulationWindow = ({
       <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-6 flex items-center"><Info className="w-5 h-5 mr-2" /> Decision Analysis</h4>
       <StepByStepDisplay
         step={currentStepData}
-        onGenerateExplanation={() => handleGenerateExplanation(currentStepData, settings.algorithm, setGeneratedExplanation)}
+        onGenerateExplanation={() => {
+          if (isPlaying) {
+            handleTogglePlayPause(); // pause the animation if it is  playing
+          }
+          handleGenerateExplanation(currentStepData, settings.algorithm, setGeneratedExplanation);
+        }}
         isGeneratingExplanation={isGeneratingExplanation}
         generatedExplanation={generatedExplanation}
       />

@@ -41,16 +41,64 @@ export const useGemini = () => {
     setIsComparing(true);
     try {
       const { algorithm, referenceString, frameCount, totalFaults } = simulation;
+      
+      // Create a cache key based on the current simulation parameters
+      const cacheKey = `comparison-${algorithm}-${referenceString.join(',')}-${frameCount}`;
+      
+      // Check if we have a cached result
+      const cachedResult = explanationCache[cacheKey];
+      if (cachedResult) {
+        setAiModalContent({
+          title: 'Algorithm Comparison Analysis',
+          content: cachedResult,
+        });
+        setIsAiModalOpen(true);
+        setIsComparing(false);
+        return;
+      }
+
       const algoName = ALGORITHM_CONFIG[algorithm].name;
-      const systemInstruction = "You are an expert Operating Systems professor. Your task is to analyze the performance of a page replacement algorithm simulation and provide a conceptual comparison against the theoretically best algorithm (Optimal). Use markdown formatting for clarity and keep the explanation concise and highly informative.";
+      const systemInstruction = `You are an expert Operating Systems professor. Your task is to analyze the performance of a page replacement algorithm simulation and provide a conceptual comparison against the theoretically best algorithm (Optimal).
+      
+      Please format your response in proper markdown with the following sections:
+      
+      1. ## Performance Summary
+         - Brief overview of the current algorithm's performance
+         - Key metrics and their significance
+      
+      2. ## Comparison with Optimal
+         - Theoretical analysis
+         - Expected performance differences
+      
+      3. ## Key Concepts
+         - Relevant theoretical concepts (e.g., Belady's Anomaly)
+         - Algorithm-specific behaviors
+      
+      4. ## Recommendations
+         - Potential improvements
+         - Best use cases
+      
+      Use markdown features like:
+      - Headers (##)
+      - Bullet points (-)
+      - Code blocks (\`\`)
+      - Bold (**) and italic (*) text
+      For clear and structured presentation.`;
+
       const userQuery = `Analyze the following page fault simulation:
       Algorithm Used: ${algoName} (${algorithm})
       Reference String: ${referenceString.join(',')}
       Number of Frames: ${frameCount}
       Actual Page Faults: ${totalFaults}
-      Compare this result against the Optimal algorithm. Explain why the Optimal algorithm would perform differently (better) and discuss any specific concept (like Belady's Anomaly or locality of reference) relevant to this result.`;
+      
+      Provide a detailed comparison against the Optimal algorithm, explaining the performance differences, theoretical concepts, and practical implications.`;
 
       const result = await callGeminiApi(systemInstruction, userQuery, GEMINI_API_URL, GEMINI_API_KEY);
+      
+      // Update cache with new result
+      const updated = { ...explanationCache, [cacheKey]: result };
+      setExplanationCache(updated);
+      saveToLocalStorage('explanationCache', updated);
 
       setAiModalContent({
         title: 'Algorithm Comparison Analysis',

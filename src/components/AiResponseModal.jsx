@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Brain } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import Button from './Button.jsx';
 
@@ -25,8 +27,27 @@ const AiResponseModal = ({ isOpen, onClose, title, content }) => (
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-5 text-gray-800 dark:text-gray-200 space-y-4 prose prose-blue dark:prose-invert">
-                <div dangerouslySetInnerHTML={{ __html: content }} />
+            <div className="p-5 text-gray-800 dark:text-gray-200 space-y-4 prose prose-blue dark:prose-invert max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h2: ({ children }) => <h2 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mt-6 mb-3">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-4 mb-2">{children}</h3>,
+                    p: ({ children }) => <p className="text-gray-600 dark:text-gray-300 mb-3">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc pl-6 mb-4 space-y-2">{children}</ul>,
+                    li: ({ children }) => <li className="text-gray-600 dark:text-gray-300">{children}</li>,
+                    code: ({ inline, children }) => (
+                      inline 
+                        ? <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-sm font-mono">{children}</code>
+                        : <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg overflow-x-auto">{children}</pre>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4">{children}</blockquote>
+                    ),
+                  }}
+                >
+                  {content}
+                </ReactMarkdown>
             </div>
             <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
                 <Button variant="secondary" onClick={onClose}>Close</Button>
