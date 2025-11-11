@@ -2,12 +2,14 @@ import { fifo } from '../algorithms/fifo.js';
 import { lru } from '../algorithms/lru.js';
 import { optimal } from '../algorithms/optimal.js';
 import { clock } from '../algorithms/clock.js';
+import { mru } from '../algorithms/mru.js';
 
 export const AlgorithmLogic = {
   FIFO: fifo,
   LRU: lru,
   Optimal: optimal,
   SecondChance: clock,
+  MRU: mru,
 };
 
 
@@ -39,13 +41,14 @@ export const ALGORITHM_CONFIG = {
     name: "Optimal (Belady's Algorithm)",
     description: "Replaces the page that will not be used for the longest time in the future",
     complexityBadge: "O(n)",
-    timeComplexity: "O(n) for future reference lookup",
+    timeComplexity: "O(m * n) total — each replacement may scan all frames (m = references, n = frames)",
     spaceComplexity: "O(1) additional space",
     advantages: ["Theoretically optimal performance", "Minimum possible page faults", "Perfect benchmark for comparison"],
     disadvantages: ["Cannot be implemented in practice", "Requires future knowledge", "Only useful for analysis"],
     realWorldUse: "Theoretical analysis, algorithm performance benchmarking",
     dataStructures: "Future reference lookup table"
-  },
+  }
+  ,
   SecondChance: {
     name: "Second Chance (Clock Algorithm)",
     description: "Enhanced FIFO with reference bits - gives recently used pages a second chance",
@@ -56,6 +59,18 @@ export const ALGORITHM_CONFIG = {
     disadvantages: ["Can degrade to FIFO performance", "Still not optimal", "Reference bit overhead"],
     realWorldUse: "Operating system page replacement, virtual memory management",
     dataStructures: "Circular buffer with reference bits and clock hand pointer"
+  }
+  ,
+  MRU: {
+    name: "Most Recently Used (MRU)",
+    description: "Replaces the most recently used page — useful in specific access patterns where recently used pages are less likely to be needed again.",
+    complexityBadge: "O(1)",
+    timeComplexity: "O(1) per operation with proper tracking",
+    spaceComplexity: "O(n) for tracking usage order",
+    advantages: ["Simple to implement", "Can perform well for certain workloads"],
+    disadvantages: ["Often performs poorly for typical temporal-locality workloads", "Can evict useful pages"],
+    realWorldUse: "Specialized caching scenarios and educational comparisons",
+    dataStructures: "Stack or list to track most-recently-used order"
   }
 };
 
@@ -69,5 +84,7 @@ export const EXAMPLE_CONFIG = {
   repeated: { string: "1,2,3,1,2,3,1,2,3,1,2,3", frames: 3, description: "Repeated Pattern" },
   random: { string: "2,5,1,8,3,7,4,6,2,9,1,5,8,3,7", frames: 4, description: "Random Access" },
   'lru-worst': { string: "1,2,3,4,1,2,3,4,1,2,3,4", frames: 3, description: "LRU Worst Case" },
-  'optimal-demo': { string: "7,0,1,2,0,3,0,4,2,3,0,3,2,3", frames: 4, description: "Optimal vs Others" }
+  'optimal-demo': { string: "7,0,1,2,0,3,0,4,2,3,0,3,2,3", frames: 4, description: "Optimal vs Others" },
+  'mru-demo': { string: "1,2,3,4,1,2,5,1,2,3,4,5", frames: 3, description: "MRU example"
+  }
 };
